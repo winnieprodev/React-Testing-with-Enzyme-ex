@@ -3,6 +3,7 @@ import App from "./App";
 import AccountBalance from "./components/AccountBalance";
 import Notification from "./components/Notification";
 import { shallow } from "enzyme";
+import toJson from "enzyme-to-json";
 
 const userBalance = {
   balance: 1100,
@@ -45,6 +46,31 @@ describe("passing props", () => {
   it("notification accepts props", () => {
     expect(notificationWrapper.props().balance).toEqual(userBalance.balance);
   });
+});
+
+describe("logic", () => {
+  const wrapper = mount(<AccountBalance accounts={userBalance} />);
+  const notificationWrapper = mount(<Notification balance={userBalance.balance} />);
+  wrapper.find("#balance-button").simulate("click");
+  it("button click - update savings", () => {
+    const savingsValue = wrapper.find(".savings").text();
+    const expectedValue = userBalance.savingsBalance + 1000 + '$';
+    expect(savingsValue).toEqual(expectedValue);
+  });
+});
+
+describe("snapshots", () => {
+  it("App snapshots", () => {
+    const tree = shallow(<App />);
+    expect(toJson(tree)).toMatchsnapshot();
+  });
+  it("Accounts snapshots", () => {
+    const accountBalanceTree = shallow(<AccountBalance accounts={userBalance} />);
+    expect(toJson(accountBalanceTree)).toMatchsnapshot();
+  });
+  it("Notification snapshot", () => {
+    const notificationTree = shallow(<Notification balance={userBalance.balance} />);
+  })
 })
 
 
