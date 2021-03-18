@@ -1,13 +1,13 @@
-import react from "react";
+import React from "react";
 import App from "./App";
 import AccountBalance from "./components/AccountBalance";
 import Notification from "./components/Notification";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 import toJson from "enzyme-to-json";
 
 const userBalance = {
   balance: 1100,
-  savingsBalance: 103,
+  savingBalance: 103,
 }
 
 describe("rendering components", () => {
@@ -34,12 +34,12 @@ describe("passing props", () => {
   const notificationWrapper = mount(<Notification balance={userBalance.balance} />);
 
   it("accepts user account props", () => {
-    expect(accountWrapper.props().accounts().toEqual(userBalance));
+    expect(accountWrapper.props().accounts).toEqual(userBalance);
   });
 
   it("contains savingBalance value", () => {
     const value = accountWrapper.find(".savings").text();
-    const expectedValue = userBalance.savingsBalance + '$';
+    const expectedValue = userBalance.savingBalance + '$';
     expect(value).toEqual(expectedValue);
   });
 
@@ -54,7 +54,7 @@ describe("logic", () => {
   wrapper.find("#balance-button").simulate("click");
   it("button click - update savings", () => {
     const savingsValue = wrapper.find(".savings").text();
-    const expectedValue = userBalance.savingsBalance + 1000 + '$';
+    const expectedValue = userBalance.savingBalance + 100 + '$';
     expect(savingsValue).toEqual(expectedValue);
   });
 });
@@ -62,15 +62,14 @@ describe("logic", () => {
 describe("snapshots", () => {
   it("App snapshots", () => {
     const tree = shallow(<App />);
-    expect(toJson(tree)).toMatchsnapshot();
+    expect(toJson(tree)).toMatchSnapshot();
   });
   it("Accounts snapshots", () => {
     const accountBalanceTree = shallow(<AccountBalance accounts={userBalance} />);
-    expect(toJson(accountBalanceTree)).toMatchsnapshot();
+    expect(toJson(accountBalanceTree)).toMatchSnapshot();
   });
   it("Notification snapshot", () => {
     const notificationTree = shallow(<Notification balance={userBalance.balance} />);
-  })
-})
-
-
+    expect(toJson(notificationTree)).toMatchSnapshot();
+  });
+});
